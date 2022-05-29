@@ -2,7 +2,11 @@
 
 
 def backwards(sound):
-    raise NotImplementedError
+    '''Return a reversed sound. It does not modify input'''
+    return {
+        'rate': sound['rate'],
+        'samples': sound['samples'][::-1],
+    }
 
 
 def mix(sound1, sound2, p):
