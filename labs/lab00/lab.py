@@ -29,7 +29,15 @@ def mix(sound1, sound2, p):
 
 
 def convolve(sound, kernel):
-    raise NotImplementedError
+    '''Apply convolution operator to the samples in a sound and a kernel'''
+    convolved_samples = [0.] * (len(sound['samples']) + len(kernel) - 1)
+    for shift, scale in enumerate(kernel):
+        samples = [0.] * shift + [sample * scale for sample in sound['samples']] + [0.] * (len(kernel) - shift - 1)
+        convolved_samples = [sum(values) for values in zip(samples, convolved_samples)]
+    return {
+        'rate': sound['rate'],
+        'samples': convolved_samples,
+    }
 
 
 def echo(sound, num_echoes, delay, scale):
@@ -161,3 +169,7 @@ if __name__ == '__main__':
     synth = load_wav('sounds/synth.wav')
     water = load_wav('sounds/water.wav')
     write_wav(mix(synth, water, p=0.2), 'answers/mix_sound.wav')
+
+    ice_and_chilli = load_wav('sounds/ice_and_chilli.wav')
+    bass_kernel = bass_boost_kernel(N=1000, scale= 1.5)
+    write_wav(convolve(ice_and_chilli, bass_kernel), 'answers/bass_ice_and_chilli.wav')
