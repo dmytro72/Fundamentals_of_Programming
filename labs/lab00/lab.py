@@ -68,7 +68,12 @@ def pan(sound):
 
 
 def remove_vocals(sound):
-    raise NotImplementedError
+    '''Remove vocals from a piece of music'''
+    samples = [left - right for left, right in zip(sound['left'], sound['right'])]
+    return {
+        'rate': sound['rate'],
+        'samples': samples
+    }
 
 
 def bass_boost_kernel(N, scale=0):
@@ -198,3 +203,6 @@ if __name__ == '__main__':
 
     car = load_wav('sounds/car.wav', stereo=True)
     write_wav(pan(car), 'answers/pan_car.wav')
+
+    lookout_mountain = load_wav('sounds/lookout_mountain.wav', stereo=True)
+    write_wav(remove_vocals(lookout_mountain), 'answers/lookout_mountain_without_vocals.wav')
