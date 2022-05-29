@@ -56,7 +56,15 @@ def echo(sound, num_echoes, delay, scale):
 
 
 def pan(sound):
-    raise NotImplementedError
+    '''Apply pan effect.'''
+    divider = len(sound['left']) - 1
+    right = [i / divider * sample for i, sample in enumerate(sound['right'])]
+    left = [(1 - i / divider) * sample for i, sample in enumerate(sound['left'])]
+    return {
+        'rate': sound['rate'],
+        'left': left,
+        'right': right,
+    }
 
 
 def remove_vocals(sound):
@@ -187,3 +195,6 @@ if __name__ == '__main__':
 
     chord = load_wav('sounds/chord.wav')
     write_wav(echo(chord, 5, 0.3, 0.6), 'answers/echo_chord.wav')
+
+    car = load_wav('sounds/car.wav', stereo=True)
+    write_wav(pan(car), 'answers/pan_car.wav')
