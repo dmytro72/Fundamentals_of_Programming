@@ -10,7 +10,22 @@ def backwards(sound):
 
 
 def mix(sound1, sound2, p):
-    raise NotImplementedError
+    '''Mix two sounds together and return new sound
+    
+    The resulting sound should take p times the samples in the first sound
+    and 1-p times the samples in the second sound, and add them together to
+    produce a new sound.
+    The two input sounds should have the same sampling rate. Return None otherwise.
+    If sounds have different durations, then length of resulting sound should be
+    minimum of the length of the input sounds.
+    '''
+    if sound1['rate'] == sound2['rate']:
+        new_sound = [first_sample * p + second_sample * (1 - p)
+            for first_sample, second_sample in zip(sound1['samples'], sound2['samples'])]
+        return {
+            'rate': sound1['rate'],
+            'samples': new_sound,
+        }
 
 
 def convolve(sound, kernel):
@@ -142,3 +157,7 @@ if __name__ == '__main__':
     # sound files being in a different directory than this file)
     mystery = load_wav('sounds/mystery.wav')
     write_wav(backwards(mystery), 'answers/mystery_reversed.wav')
+
+    synth = load_wav('sounds/synth.wav')
+    water = load_wav('sounds/water.wav')
+    write_wav(mix(synth, water, p=0.2), 'answers/mix_sound.wav')
