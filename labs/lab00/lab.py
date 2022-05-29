@@ -41,7 +41,18 @@ def convolve(sound, kernel):
 
 
 def echo(sound, num_echoes, delay, scale):
-    raise NotImplementedError
+    '''Apply echo filter'''
+    sample_delay = round(delay * sound['rate'])
+    resulting_samples = [0.] * (len(sound['samples']) + sample_delay * num_echoes)
+    for i in range(num_echoes + 1):
+        iteration_scale = scale ** i
+        part_of_samples = [sample * iteration_scale for sample in sound['samples']]
+        samples = [0.] * i * sample_delay + part_of_samples + [0.] * (num_echoes - i) * sample_delay
+        resulting_samples = [sum(values) for values in zip(samples, resulting_samples)]
+    return {
+        'rate': sound['rate'],
+        'samples': resulting_samples,
+    }
 
 
 def pan(sound):
@@ -173,3 +184,6 @@ if __name__ == '__main__':
     ice_and_chilli = load_wav('sounds/ice_and_chilli.wav')
     bass_kernel = bass_boost_kernel(N=1000, scale= 1.5)
     write_wav(convolve(ice_and_chilli, bass_kernel), 'answers/bass_ice_and_chilli.wav')
+
+    chord = load_wav('sounds/chord.wav')
+    write_wav(echo(chord, 5, 0.3, 0.6), 'answers/echo_chord.wav')
