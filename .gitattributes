@@ -1,3 +1,2 @@
-=*.nodes filter=lfs diff=lfs merge=lfs -text
 *.ways filter=lfs diff=lfs merge=lfs -text
 *.nodes filter=lfs diff=lfs merge=lfs -text
