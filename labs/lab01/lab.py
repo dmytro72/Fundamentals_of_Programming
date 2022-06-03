@@ -8,29 +8,101 @@ from PIL import Image as Image
 
 
 def get_pixel(image, x, y):
-    return image['pixels'][x, y]
+    '''Gives the value of the pixel with the given coordinatetes
+    
+    Parameters
+    ----------
+    image : dict
+        Image representation using three keys:
+            width : int
+                The width of the image (in pixels)
+            height: int
+                The height of the image (in pixels)
+            pixels: list of int
+                A Python list of pixel brightnesses stored in row-major order
+    
+    x : int
+        The horizontal coordinate of the pixel. Value increases from left to
+        right
+
+    y : int
+        The vetical coordinate of the pixel. Value increases from top to
+        bottom
+
+    Returns
+    -------
+    pixel : int
+        Pixel value in grayscale from 0 to 255
+    '''
+    return image['pixels'][y * image['width'] + x]
 
 
 def set_pixel(image, x, y, c):
-    image['pixels'][x, y] = c
+    '''Assigns a new value to the pixel with the given coordinates
+    
+    Parameters
+    ----------
+    image : dict
+        Image representation using three keys:
+            width : int
+                The width of the image (in pixels)
+            height: int
+                The height of the image (in pixels)
+            pixels: list of int
+                A Python list of pixel brightnesses stored in row-major order
+    
+    x : int
+        The horizontal coordinate of the pixel. Value increases from left to
+        right
+
+    y : int
+        The vetical coordinate of the pixel. Value increases from top to
+        bottom
+    
+    c : int
+        New value of the pixel in grayscale from 0 to 255
+    '''
+    image['pixels'][y * image['width'] + x] = c
 
 
 def apply_per_pixel(image, func):
+    '''Applies a function to every pixel in the image
+
+    Parameters
+    ----------
+    image : dict
+        Image representation using three keys:
+            width : int
+                The width of the image (in pixels)
+            height: int
+                The height of the image (in pixels)
+            pixels: list of int
+                A Python list of pixel brightnesses stored in row-major order
+    
+    func : function
+        A function applied to all pixels in an image
+
+    Returns
+    -------
+    new_image : dict
+        The result of applying the function. The original image is not changed.
+    '''
     result = {
         'height': image['height'],
-        'widht': image['width'],
-        'pixels': [],
+        'width': image['width'],
+        'pixels': [0] * (image['height'] * image['width']),
     }
-    for x in range(image['height']):
-        for y in range(image['width']):
+    for y in range(image['height']):
+        for x in range(image['width']):
             color = get_pixel(image, x, y)
             newcolor = func(color)
-        set_pixel(result, y, x, newcolor)
+            set_pixel(result, x, y, newcolor)
     return result
 
 
 def inverted(image):
-    return apply_per_pixel(image, lambda c: 256-c)
+    '''Inverts the image. The original image does not change'''
+    return apply_per_pixel(image, lambda c: 255-c)
 
 
 # HELPER FUNCTIONS
